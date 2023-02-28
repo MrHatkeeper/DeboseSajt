@@ -4,7 +4,7 @@ import kotlin.math.pow
 fun main() {
     val jdbcUrl = "jdbc:mariadb://localhost:3306/mesto"
     val connection = DriverManager.getConnection(jdbcUrl, "root", "admin")
-    val input = inetAton("50.0.100.0")
+    val input = inetAton(readln())
     val startT = System.currentTimeMillis()
 
 
