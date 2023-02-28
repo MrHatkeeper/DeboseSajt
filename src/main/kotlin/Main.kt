@@ -1,43 +1,33 @@
 import java.sql.DriverManager
+import kotlin.math.pow
 
 fun main() {
     val jdbcUrl = "jdbc:mariadb://localhost:3306/mesto"
     val connection = DriverManager.getConnection(jdbcUrl, "root", "admin")
-
+    val input = inetAton("50.0.100.0")
     val startT = System.currentTimeMillis()
 
-    val query = connection.prepareStatement("SELECT id,ip_start, ip_end FROM dbip_lookup_educa")
+
+    val query =
+        connection.prepareStatement("SELECT city, ip_end_num FROM dbip_lookup_educa where $input between ip_start_num and ip_end_num order by ip_start_num desc limit 1")
     val result = query.executeQuery()
 
+
     while (result.next()) {
-        val start = result.getString("ip_start")
-        val end = result.getString("ip_end")
-        val id = result.getString("id").toInt()
-
-        val aaa = bogus(start)
-        val bbb = bogus(end)
-
-        val a = connection.prepareStatement("update dbip_lookup_educa set ip_start_num = $aaa, ip_end_num = $bbb where id = $id")
-        a.executeQuery()
+           println(result.getString("city"))
     }
 
 
-    println(System.currentTimeMillis() - startT)
+    val aa = (System.currentTimeMillis() - startT)
+    println(aa.toDouble()/1000)
 }
 
-fun ipToBinary(ip: String): Long {
-    val holder = ip.replace(".", "")
-    return Integer.toBinaryString(holder.toInt()).toLong()
-}
+fun inetAton(ip: String): Long {
+    var output = 0.0
+    val holder = ip.split(".")
 
-fun bogus(num: String): String {
-    var output = ""
-    val holder = num.split(".")
-    for (i in holder) {
-        var aaaa = i
-        while (aaaa.length < 3) aaaa = "0$aaaa"
-        output += aaaa
-    }
-    return output
+    for (i in holder.indices) output += holder[i].toDouble() * 256.0.pow(holder.size - 1 - i)
+
+    return output.toLong()
 }
 
