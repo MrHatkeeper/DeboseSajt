@@ -2,24 +2,28 @@ import java.sql.DriverManager
 import kotlin.math.pow
 
 fun main() {
-    val jdbcUrl = "jdbc:mariadb://localhost:3306/mesto"
-    val connection = DriverManager.getConnection(jdbcUrl, "root", "admin")
-    val input = inetAton(readln())
-    val startT = System.currentTimeMillis()
+    val jdbcUrl = "jdbc:mariadb://localhost:3306/db_lookup_educa"
+    val connection = DriverManager.getConnection(jdbcUrl, "root", "")
+    while (true) {
+        val input = inetAton(readln())
+        val startT = System.currentTimeMillis()
 
 
-    val query =
-        connection.prepareStatement("SELECT city, ip_end_num FROM dbip_lookup_educa where $input between ip_start_num and ip_end_num order by ip_start_num desc limit 1")
-    val result = query.executeQuery()
+        val query =
+            connection.prepareStatement("SELECT city, stateprov FROM DbIp_Lookup_Educa where $input between ip_start_num and ip_end_num order by ip_start_num desc limit 1")
+        val result = query.executeQuery()
 
 
-    while (result.next()) {
-           println(result.getString("city"))
+        while (result.next()) {
+            println(result.getString("city"))
+            println(result.getString("stateprov"))
+        }
+
+
+        val aa = (System.currentTimeMillis() - startT)
+        println(aa.toDouble() / 1000)
+
     }
-
-
-    val aa = (System.currentTimeMillis() - startT)
-    println(aa.toDouble()/1000)
 }
 
 fun inetAton(ip: String): Long {
